@@ -1,0 +1,11 @@
+ROBERT: 1 - 62
+ADAM: 63 - 125
+ALLIE: 126 - 188
+DAVE: 189 - 251
+CHRIS: 252 - 314
+BRANDON: 315 - 377
+
+
+http://dev.virtualearth.net/REST/v1/Locations?q=1%20Microsoft%20Way%20Redmond%20WA&key=AmEa01YgR2J-e2GRn_kc8-pTjfTgTtJcxQmMrF1ZRDLFx7KfCKrwECa54zvrHuEm
+
+http://dev.virtualearth.net/REST/v1/Locations?q=2136%20lytle%20st.%20louisville%20ky&key=AmEa01YgR2J-e2GRn_kc8-pTjfTgTtJcxQmMrF1ZRDLFx7KfCKrwECa54zvrHuEm

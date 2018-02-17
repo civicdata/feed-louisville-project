@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Louisville Homicide Map</title>
+        <title>Louisville Food Locator</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
-        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.css" />
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" />
         <link rel="stylesheet" href="css/master.css" />
         
         <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
-        <script src="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.js"></script>
+        <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"></script>
         <script src="js/parse-address.min.js"></script>
         <script src="js/leaflet-knn.min.js"></script>
         
@@ -16,15 +16,15 @@
           attaching the data to a variable pgh_shootings. Since we're referencing our js file below, this murder.html file
           can now use that pgh_shootings variable.
         -->
-        <script src="data/20170627-LMPD-homicides-clean-geo.js"></script>
+        <script src="data/20180217_jeff_co_food_data_source_naics.js"></script>
     </head>
     
     <body>
       
       <div class="map-top container">
         
-        <h1 class="MalloryBold">How many homicides have there been near you?</h1>
-        <p class= "MalloryLight">Every homicide in Louisville for the last 5 years. This map will be updated. </p>
+        <h1 class="MalloryBold">How many food sources are located near you?</h1>
+        <p class= "MalloryLight">###</p>
         
   			<div class="row">
   				<div class="col-sm-7">
@@ -39,7 +39,7 @@
         <div class="row" id="map"></div>
         
         <div class="row">
-          <p class="MalloryLightSmall"><em>Source: Louisville Metro Police Department, Homicide data January 1, 2012 through June 6, 2017<br><strong>Map by Alexandra Kanik and Natasha Khan</strong></em></p>
+          <p class="MalloryLightSmall"><em>Source: Jefferson County Food Data based on USDA SNAP data <br><strong>Map by CDA</strong></em></p>
         </div>
         
       </div>
@@ -63,7 +63,7 @@
           
           // Looks like we've already solved issue #12, color-coding markers
           // We're creating marker styles for solved shootings ...
-          var geojsonMarkerGSW = {
+          var mGrocery = {
     		    radius: 8,
     		    fillColor: "#e41a1c",
     		    color: "#000",
@@ -75,7 +75,7 @@
     			// ... and unsolved shootings.
     			// We can create a variable for each marker type. The logic is contained in
     			// shootings.pointToLayer (lines 107-115ish)
-    			var geojsonMarkerBFT = {
+    			var mSuperstore = {
   			    radius: 8,
   			    fillColor: "#1f78b4",
   			    color: "#000",
@@ -84,7 +84,7 @@
   			    fillOpacity: 0.8
     			};
 
-          var geojsonMarkerStabbing = {
+          var mConvenience = {
             radius: 8,
             fillColor: "#4daf4a",
             color: "#000",
@@ -93,9 +93,27 @@
             fillOpacity: 0.8
           };
           
-          var geojsonMarkerOther = {
+          var mSpecialty = {
             radius: 8,
             fillColor: "#ffff33",
+            color: "#000",
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 0.8
+          }
+          
+          var mFarmMarket = {
+            radius: 8,
+            fillColor: "#ffff33",
+            color: "#000",
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 0.8
+          }
+          
+          var mNA = {
+            radius: 8,
+            fillColor: "#cccccc",
             color: "#000",
             weight: 1,
             opacity: 1,
@@ -105,43 +123,49 @@
             
           /* JS COMMENTS: Comment out lines 91 - 118 above and uncomment the code block below to see how we can just as easily use our js data file.*/
             
-            var homicides = L.geoJson(homicide_data, {
+            var foodSites = L.geoJson(food_data, {
               onEachFeature: function (feature, layer) {
-                var cause = feature.properties['cause'];
-                var date = feature.properties['date'];
-                var year = feature.properties['year'];
-                var month = feature.properties['month'];
-                var location = feature.properties['location'];
-                var victim = feature.properties['new_victim'];
-                var gender = feature.properties['new_gender'];
-                var race = feature.properties['new_race'];
-                var age = feature.properties['new_age'];
-                var cause = feature.properties['new_cause'];
                 
-                console.log('pie');
-                    
-                layer.bindPopup("<strong>Date</strong> " + date + "<br><strong>Location:</strong> " + location + "<br><strong>Race:</strong><br>" + race + "<br><strong>Age:</strong><br>" + age + "<br><strong>Cause:</strong><br>" + cause);
+                var store_name = feature.properties['Store_Name'];
+                var longitude = feature.properties['Longitude'];
+                var latitude = feature.properties['Latitude'];
+                var address = feature.properties['Address'];
+                var address2 = feature.properties['Address Line #2'];
+                var city = feature.properties['City'];
+                var state = feature.properties['State'];
+                var zip5 = feature.properties['Zip5'];
+                var zip4 = feature.properties['Zip4'];
+                var county = feature.properties['County'];
+                var name_no_num = feature.properties['name_no_num'];
+                var code = feature.properties['code'];
+                var row_num = feature.properties['row_num'];
+                var definition = feature.properties['definition'];
+                
+                
+                layer.bindPopup("<h3> " + store_name + "</h3><h4>" + definition + "</h4><p>" + address + "<br>" + city + "<br>" + state + "<br>" + zip5 + "</p>");
                 },
                 
               // Here's where we employ our marker color logic
               pointToLayer: function (feature, latlng) {
                 //return L.circleMarker(latlng, geojsonMarkerHomicide);
-                var color = feature.properties['new_cause'];
-                if(color == 'Gun shot wound'){
-                  return L.circleMarker(latlng, geojsonMarkerGSW);
-                }else if(color == 'Blunt force trauma'){
-                  return L.circleMarker(latlng, geojsonMarkerBFT);
-                }else if(color == 'Stabbing'){
-                  return L.circleMarker(latlng, geojsonMarkerStabbing);
-                }else{
-                  return L.circleMarker(latlng, geojsonMarkerOther)
+                var color = feature.properties['definition'];
+                if(color == "Farmer's Market"){
+                  return L.circleMarker(latlng, mFarmMarket);
+                }else if(color == "Food Mart"){
+                  return L.circleMarker(latlng, mConvenience);
+                }else if(color == "Grocery"){
+                  return L.circleMarker(latlng, mGrocery);
+                }else if(color == "NA"){
+                  return L.circleMarker(latlng, mNA)
+                }else if(color == "Specialized Lines of Food"){
+                  return L.circleMarker(latlng, mSpecialty)
+                }else if(color == "Super Center and Club Store"){
+                  return L.circleMarker(latlng, mSuperstore)
                 }
               }
             });
             
-            
-          
-          homicides.addTo(map);
+          foodSites.addTo(map);
 
           var userMarker = '';
           var userRadius = '';
@@ -166,30 +190,36 @@
                     var userLat = userAddress[0];
                     var userLon = userAddress[1];
                     var userLatLng = L.latLng(userLat,userLon);
-                    var gswList = [];
-                    var bftList = [];
-                    var stabbingList = [];
-                    var otherList = [];
+                    var farmMarketList = [];
+                    var foodMartList = [];
+                    var groceryList = [];
+                    var naList = [];
+                    var specializedList = [];
+                    var superList = [];
+                    
                   
                     userMarker = L.marker(userAddress);
                     userMarker.addTo(map);
                     map.setView(userLatLng, 14);
                     
-                    var nearest = leafletKnn(homicides).nearest(L.latLng(userLat, userLon), 1000, 1609.34);
-                    console.log(nearest);
+                    var nearest = leafletKnn(foodSites).nearest(L.latLng(userLat, userLon), 1000, 1609.34);
                     var nearestLayer = nearest[0]['layer'];
-                    var numIncidents = nearest.length;
+                    var numFoods = nearest.length;
                     
                     $.each(nearest, function(index, value){
-                      var cod = value['layer']['feature']['properties']['new_cause'];
-                      if(cod == 'Gun shot wound'){
-                        gswList.push(cod);
-                      }else if(cod == 'Blunt force trauma'){
-                        bftList.push(cod);
-                      }else if(cod == 'Stabbing'){
-                        stabbingList.push(cod)
-                      }else{
-                        otherList.push(cod);
+                      var foodType = value['layer']['feature']['properties']['definition'];
+                      if(foodType == "Farmer's Market"){
+                        farmMarketList.push(foodType);
+                      }else if(foodType == "Food Mart"){
+                        foodMartList.push(foodType);
+                      }else if(foodType == "Grocery"){
+                        groceryList.push(foodType)
+                      }else if(foodType == "NA"){
+                        naList.push(foodType);
+                      }else if(foodType == "Specialized Lines of Food"){
+                        specializedList.push(foodType);
+                      }else if(foodType == "Super Center and Club Store"){
+                        superList.push(foodType);
                       }
                       
                     });
@@ -206,9 +236,7 @@
                     var distanceBetween = nearestLayerLatLng.distanceTo(userLatLng);
                     var distanceInMiles = distanceBetween / 1609.34;
                     
-                    var popupContent = '<h4 class="MalloryLight">There have been <strong>' + numIncidents + '</strong> homicides within 1 mile of this address.</h4> <strong>' + gswList.length + '</strong> from gun shot wounds, <strong>' + bftList.length + '</strong> from blunt force trauma, <strong>' + stabbingList.length + '</strong> from stab wounds and <strong>' + otherList.length + '</strong> from other causes. The closest homicide to this address was <strong>' + distanceInMiles.toFixed(2) + '</strong> miles away.</p>';
-                    
-                    
+                    var popupContent = '<h4 class="MalloryLight">There are <strong>' + numFoods + '</strong> food sources within 1 mile of this address.</h4> <strong>' + farmMarketList.length + '</strong> farmers markets, <strong>' + foodMartList.length + '</strong> convenience stores, <strong>' + groceryList.length + '</strong> grocerty stores, <strong>' + specializedList.length + '</strong> specialized stores, <strong>' + superList.length + '</strong> super stores and <strong>' + naList.length + '</strong> other food stores. The closest store to this address is <strong>' + distanceInMiles.toFixed(2) + '</strong> miles away.</p>';
     
                     nearestLayer.bindPopup(popupContent).openPopup();
                     

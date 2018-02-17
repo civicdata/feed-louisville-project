@@ -21,6 +21,26 @@ stores %<>%
     htmltools::HTML(glue::glue('<strong>{Store_Name}<br>{Address}<br>{Zip5}<br>{definition}'))
   }))
 
+palette <- RColorBrewer::brewer.pal(length(unique(stores$code)), 'BuGn')
+
+icon_df <- tibble(description = unique(stores$definition)) %>% 
+  mutate(icon = map(palette, function(color) makeAwesomeIcon(icon = 'utensils', library = 'fa', markerColor = color, iconColor = color)))
+
+stores %<>%
+  left_join(icon_df, by = c('definition' = 'description')) %>% 
+  mutate(icon_index = as.character(code))
+
+icons <- awesomeIconList(
+  '445120' = makeAwesomeIcon(icon = 'utensils', library = 'fa', markerColor = 'red', iconColor = palette[1]),
+  '447110' = makeAwesomeIcon(icon = 'utensils', library = 'fa', markerColor = 'darkred', iconColor = palette[2]),
+  '445110' = makeAwesomeIcon(icon = 'utensils', library = 'fa', markerColor = 'lightred', iconColor = palette[3]),
+  '445200' = makeAwesomeIcon(icon = 'utensils', library = 'fa', markerColor = 'orange', iconColor = palette[4]),
+  '452910' = makeAwesomeIcon(icon = 'utensils', library = 'fa', markerColor = 'beige', iconColor = palette[5]),
+  '6' = makeAwesomeIcon(icon = 'utensils', library = 'fa', markerColor = 'green', iconColor = palette[6]),
+  '5' = makeAwesomeIcon(icon = 'utensils', library = 'fa', markerColor = 'darkgreen', iconColor = palette[7]),
+  '7' = makeAwesomeIcon(icon = 'utensils', library = 'fa', markerColor = 'lightgreen', iconColor = palette[8])
+)
+
 stores_shared <- SharedData$new(stores)
 
 ```
@@ -34,7 +54,7 @@ filter_checkbox("code",'', stores_shared, ~definition, inline = TRUE)
 ### Map
 ```{r, echo=F, message=F, warning=F}
 leaflet(data = stores_shared) %>% 
-         addTiles() %>%
-         addMarkers(~Longitude, ~Latitude, popup = ~map_label)
+  addTiles() %>%
+  addAwesomeMarkers(~Longitude, ~Latitude, popup = ~map_label, icon = ~icons[icon_index])
 ```
 

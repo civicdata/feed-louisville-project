@@ -1,0 +1,99 @@
+#map { 
+	height: 550px; 
+	}
+	
+input[type=text] {
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  -webkit-transition: width 0.4s ease-in-out;
+  transition: width 0.4s ease-in-out;
+  font-size: 16px;
+}
+
+input[type=text]:focus {
+  width: 50%;
+}
+
+input[type=button], input[type=submit], input[type=reset] {
+    background-color: #000000;
+    border: none;
+    color: white;
+    font-family: Mallory-Medium;
+    padding: 15px 30px 10px;
+    text-decoration: none;
+    margin: 4px 2px;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+@font-face{
+font-family: "Mallory-Bold";
+src: url("fonts/Mallory-Bold.otf");
+}
+
+@font-face{
+font-family: "Mallory-Ultra";
+src: url("fonts/Mallory-Ultra.otf");
+}
+
+@font-face{
+font-family: "Mallory-Light";
+src: url("fonts/Mallory-Light.otf");
+}
+
+@font-face{
+font-family: "Mallory-Medium";
+src: url("fonts/Mallory-Light.otf");
+}
+.MalloryBold{
+  font-family: "Mallory-Bold";
+  font-weight: normal;
+  font-size: 3em;
+  line-height: 1.2em;
+  font
+  }
+
+.MalloryMedium{
+  font-family: "Mallory-Medium";
+  font-weight: normal;
+  font-size: 3em;
+  line-height: 1.2em;
+  font
+  }
+
+
+.MalloryUltra{
+  font-family: "Mallory-Ultra";
+  font-weight: normal;
+  line-height: 1.2em;
+  font
+  }
+
+  .MalloryLight{
+  font-family: "Mallory-Light";
+  font-weight: normal;
+  font-size: 1.5em;
+  line-height: 1.2em;
+  font
+  }
+
+    .MalloryLightSmall{
+  font-family: "Mallory-Light";
+  font-weight: normal;
+  font-size: 1em;
+  line-height: 1.2em;
+  font
+  }
+  
+@media only screen and (max-width: 768px) {
+    
+    #map{ 
+      height: 300px; 
+      width:100%;
+    }
+    
+    .leaflet-popup-content{ 
+      width:250px;
+    }
+}

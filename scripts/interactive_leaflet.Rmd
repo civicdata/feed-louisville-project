@@ -1,0 +1,40 @@
+---
+title: "Food in Louisville"
+author: "Civic Data Alliance Food Security Hackathon"
+date: "`r Sys.Date()`"
+output:
+  prettydoc::html_pretty:
+    theme: architect
+    highlight: github
+---
+
+```{r, echo=F, message=F, warning=F}
+library(tidyverse)
+library(magrittr)
+library(leaflet)
+library(crosstalk)
+
+stores <- read_csv('../data/jeff_co_food_data_source_naics_dtc.csv')
+
+stores %<>%
+  mutate(map_label = pmap(list(Store_Name, Address, Zip5, definition), function(Store_Name, Address, Zip5, definition){
+    htmltools::HTML(glue::glue('<strong>{Store_Name}<br>{Address}<br>{Zip5}<br>{definition}'))
+  }))
+
+stores_shared <- SharedData$new(stores)
+
+```
+
+
+### Select NAICS Code
+```{r, echo=F, message=F, warning=F}
+filter_checkbox("code",'', stores_shared, ~definition, inline = TRUE)
+```
+
+### Map
+```{r, echo=F, message=F, warning=F}
+leaflet(data = stores_shared) %>% 
+         addTiles() %>%
+         addMarkers(~Longitude, ~Latitude, popup = ~map_label)
+```
+

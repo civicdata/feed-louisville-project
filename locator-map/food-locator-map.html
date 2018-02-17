@@ -170,117 +170,128 @@
           var userMarker = '';
           var userRadius = '';
           
-          function getAddress(addressString){
-            
-            function findNearest(geocodeURL){
-              $.ajax({
-                type : "Get",
-                url :geocodeURL,
-                dataType :"jsonp",
-                jsonpCallback: "myCallback",
-                success : function(data){
-                
-                    if(userMarker != ''){
-                      map.removeLayer(userMarker);
-                      map.removeLayer(userRadius);
-                    }else{
-                      
-                    }
-                    var userAddress = data['resourceSets'][0]['resources'][0]['point']['coordinates'];
-                    var userLat = userAddress[0];
-                    var userLon = userAddress[1];
-                    var userLatLng = L.latLng(userLat,userLon);
-                    var farmMarketList = [];
-                    var foodMartList = [];
-                    var groceryList = [];
-                    var naList = [];
-                    var specializedList = [];
-                    var superList = [];
+          function findNearest(geocodedURL){
+            $.ajax({
+              type : "Get",
+              url :geocodedURL,
+              dataType :"jsonp",
+              jsonpCallback: "myCallback",
+              success : function(data){
+              
+                  if(userMarker != ''){
+                    map.removeLayer(userMarker);
+                    map.removeLayer(userRadius);
+                  }else{
                     
+                  }
+                  var userAddress = data['resourceSets'][0]['resources'][0]['point']['coordinates'];
+                  var userLat = userAddress[0];
+                  var userLon = userAddress[1];
+                  var userLatLng = L.latLng(userLat,userLon);
+                  var farmMarketList = [];
+                  var foodMartList = [];
+                  var groceryList = [];
+                  var naList = [];
+                  var specializedList = [];
+                  var superList = [];
                   
-                    userMarker = L.marker(userAddress);
-                    userMarker.addTo(map);
-                    map.setView(userLatLng, 14);
+                
+                  userMarker = L.marker(userAddress);
+                  userMarker.addTo(map);
+                  map.setView(userLatLng, 14);
+                  
+                  var nearest = leafletKnn(foodSites).nearest(L.latLng(userLat, userLon), 1000, 1609.34);
+                  var nearestLayer = nearest[0]['layer'];
+                  var numFoods = nearest.length;
+                  
+                  $.each(nearest, function(index, value){
+                    var foodType = value['layer']['feature']['properties']['definition'];
+                    if(foodType == "Farmer's Market"){
+                      farmMarketList.push(foodType);
+                    }else if(foodType == "Food Mart"){
+                      foodMartList.push(foodType);
+                    }else if(foodType == "Grocery"){
+                      groceryList.push(foodType)
+                    }else if(foodType == "NA"){
+                      naList.push(foodType);
+                    }else if(foodType == "Specialized Lines of Food"){
+                      specializedList.push(foodType);
+                    }else if(foodType == "Super Center and Club Store"){
+                      superList.push(foodType);
+                    }
                     
-                    var nearest = leafletKnn(foodSites).nearest(L.latLng(userLat, userLon), 1000, 1609.34);
-                    var nearestLayer = nearest[0]['layer'];
-                    var numFoods = nearest.length;
-                    
-                    $.each(nearest, function(index, value){
-                      var foodType = value['layer']['feature']['properties']['definition'];
-                      if(foodType == "Farmer's Market"){
-                        farmMarketList.push(foodType);
-                      }else if(foodType == "Food Mart"){
-                        foodMartList.push(foodType);
-                      }else if(foodType == "Grocery"){
-                        groceryList.push(foodType)
-                      }else if(foodType == "NA"){
-                        naList.push(foodType);
-                      }else if(foodType == "Specialized Lines of Food"){
-                        specializedList.push(foodType);
-                      }else if(foodType == "Super Center and Club Store"){
-                        superList.push(foodType);
-                      }
-                      
-                    });
-                                        
-                    userRadius = L.circle(userLatLng, 1609.34, {
-                       color: '#418cff ', stroke: true, weight:1, fill: true, fillColor: '#cccccc ', fillOpacity: 0.35
-                   });
-                    userRadius.addTo(map).bringToBack();
-                    
-                    var nearestLayerLatLng = nearestLayer.getLatLng();
-                    var nearestLayerType = nearestLayer.feature.properties.cause;
-                    var nearestLayerAddress = nearestLayer.feature.properties.location;
-                                  
-                    var distanceBetween = nearestLayerLatLng.distanceTo(userLatLng);
-                    var distanceInMiles = distanceBetween / 1609.34;
-                    
-                    var popupContent = '<h4 class="MalloryLight">There are <strong>' + numFoods + '</strong> food sources within 1 mile of this address.</h4> <strong>' + farmMarketList.length + '</strong> farmers markets, <strong>' + foodMartList.length + '</strong> convenience stores, <strong>' + groceryList.length + '</strong> grocerty stores, <strong>' + specializedList.length + '</strong> specialized stores, <strong>' + superList.length + '</strong> super stores and <strong>' + naList.length + '</strong> other food stores. The closest store to this address is <strong>' + distanceInMiles.toFixed(2) + '</strong> miles away.</p>';
-    
-                    nearestLayer.bindPopup(popupContent).openPopup();
-                    
-                },
-                error : function(httpReq,status,exception){
-                    alert(status+" "+exception);
-                }
-              });
-            }
-            
-            var parsedAddress = parseAddress.parseLocation(addressString);
-            var address = '';
-            var city = '';
-            var state = '';
-            var zip = '';
-            var geocodeURL = '';
-            
-            if(parsedAddress['number'] && parsedAddress['prefix'] && parsedAddress['street'] && parsedAddress['type']){
-              address = parsedAddress['number'] + ' ' + parsedAddress['prefix'] + ' ' + parsedAddress['street'] + ' ' + parsedAddress['type']; 
-            }else if(parsedAddress['number'] && parsedAddress['street'] && parsedAddress['type']){
-              address = parsedAddress['number'] + ' ' + parsedAddress['street'] + ' ' + parsedAddress['type']; 
-            }else if(parsedAddress['number'] && parsedAddress['street']){
-              address = parsedAddress['number'] + ' ' + parsedAddress['street'];
-            }else{
-              alert('Please enter at least a street number and street name');
-              return;
-            }
-            
-            if(parsedAddress['city'] && parsedAddress['state'] && parsedAddress['zip']){
-              city = parsedAddress['city'];
-              state = parsedAddress['state'];
-              zip = parsedAddress['zip'];
-              geocodeURL = 'http://dev.virtualearth.net/REST/v1/Locations/US/' + state + '/' + zip + '/' + city + '/' + encodeURIComponent(address) + '?o=json&jsonp=myCallback&key=AmEa01YgR2J-e2GRn_kc8-pTjfTgTtJcxQmMrF1ZRDLFx7KfCKrwECa54zvrHuEm';
-              findNearest(geocodeURL);
-            }else{
-              alert('Please enter a city, state and zip');
-              return;
-            }
+                  });
+                                      
+                  userRadius = L.circle(userLatLng, 1609.34, {
+                     color: '#418cff ', stroke: true, weight:1, fill: true, fillColor: '#cccccc ', fillOpacity: 0.35
+                 });
+                  userRadius.addTo(map).bringToBack();
+                  
+                  var nearestLayerLatLng = nearestLayer.getLatLng();
+                  var nearestLayerType = nearestLayer.feature.properties.cause;
+                  var nearestLayerAddress = nearestLayer.feature.properties.location;
+                                
+                  var distanceBetween = nearestLayerLatLng.distanceTo(userLatLng);
+                  var distanceInMiles = distanceBetween / 1609.34;
+                  
+                  var popupContent = '<h4 class="MalloryLight">There are <strong>' + numFoods + '</strong> food sources within 1 mile of this address.</h4> <strong>' + farmMarketList.length + '</strong> farmers markets, <strong>' + foodMartList.length + '</strong> convenience stores, <strong>' + groceryList.length + '</strong> grocerty stores, <strong>' + specializedList.length + '</strong> specialized stores, <strong>' + superList.length + '</strong> super stores and <strong>' + naList.length + '</strong> other food stores. The closest store to this address is <strong>' + distanceInMiles.toFixed(2) + '</strong> miles away.</p>';
+  
+                  nearestLayer.bindPopup(popupContent).openPopup();
+                  
+              },
+              error : function(httpReq,status,exception){
+                  alert(status+" "+exception);
+              }
+            });
+          }
+          
+          function getAddress(addressString){
+            function unnecessaryFunction(){
+              var parsedAddress = parseAddress.parseLocation(addressString);
+              var address = '';
+              var city = '';
+              var state = '';
+              var zip = '';
+              var geocodeURL = '';
+              
+              //Fucking mess
+              if(parsedAddress['number'] && parsedAddress['prefix'] && parsedAddress['street'] && parsedAddress['type']){
+                address = parsedAddress['number'] + ' ' + parsedAddress['prefix'] + ' ' + parsedAddress['street'] + ' ' + parsedAddress['type']; 
+              }else if(parsedAddress['number'] && parsedAddress['street'] && parsedAddress['type']){
+                address = parsedAddress['number'] + ' ' + parsedAddress['street'] + ' ' + parsedAddress['type']; 
+              }else if(parsedAddress['number'] && parsedAddress['street']){
+                address = parsedAddress['number'] + ' ' + parsedAddress['street'];
+              }else{
+                alert('Please enter at least a street number and street name');
+                return;
+              }
+              
+              if(parsedAddress['city'] && parsedAddress['state'] && parsedAddress['zip']){
+                city = parsedAddress['city'];
+                state = parsedAddress['state'];
+                zip = parsedAddress['zip'];
+                geocodeURL = 'http://dev.virtualearth.net/REST/v1/Locations/US/' + state + '/' + zip + '/' + city + '/' + encodeURIComponent(address) + '?o=json&jsonp=myCallback&key=AmEa01YgR2J-e2GRn_kc8-pTjfTgTtJcxQmMrF1ZRDLFx7KfCKrwECa54zvrHuEm';
+                
+                findNearest(geocodeURL);
+              }else{
+                city = 'Louiville';
+                state = 'Kentucky';
+                geocodeURL = 'http://dev.virtualearth.net/REST/v1/Locations/US/' + state + '/' + zip + '/' + city + '/' + encodeURIComponent(address) + '?o=json&jsonp=myCallback&key=AmEa01YgR2J-e2GRn_kc8-pTjfTgTtJcxQmMrF1ZRDLFx7KfCKrwECa54zvrHuEm';
+                findNearest(geocodeURL);
+                //alert('Please enter a city, state and zip');
+                //return;
+              }
+            };
           };
+          
           
           $('#addressSubmit').on('click',function(){
             if($('#addressInput').val()){
               var userMarker;
-              getAddress($('#addressInput').val());
+              var addressString = $('#addressInput').val();
+              var geocodedURL = 'http://dev.virtualearth.net/REST/v1/Locations?q=' + encodeURIComponent(addressString) + '&jsonp=myCallback&key=AmEa01YgR2J-e2GRn_kc8-pTjfTgTtJcxQmMrF1ZRDLFx7KfCKrwECa54zvrHuEm';
+              //getAddress($('#addressInput').val());
+              findNearest(geocodedURL);
             }else{
               alert('Please submit a full address (street address, city, state, zip)');
             }

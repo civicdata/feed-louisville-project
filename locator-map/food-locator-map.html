@@ -28,7 +28,7 @@
         
   			<div class="row">
   				<div class="col-sm-7">
-  					<img class="img-responsive" src="./images/gunmap-key-horizontal-01.png" alt="map key" />
+  					<img class="img-responsive" src="./images/map-key.png" alt="map key" />
   				</div>
   			</div>
         <div id="address-input">
@@ -65,7 +65,7 @@
           // We're creating marker styles for solved shootings ...
           var mGrocery = {
     		    radius: 8,
-    		    fillColor: "#e41a1c",
+    		    fillColor: "#4DAF4A",
     		    color: "#000",
     		    weight: 1,
     		    opacity: .7,
@@ -77,7 +77,7 @@
     			// shootings.pointToLayer (lines 107-115ish)
     			var mSuperstore = {
   			    radius: 8,
-  			    fillColor: "#1f78b4",
+  			    fillColor: "#1F78B4",
   			    color: "#000",
   			    weight: 1,
   			    opacity: 1,
@@ -86,7 +86,7 @@
 
           var mConvenience = {
             radius: 8,
-            fillColor: "#4daf4a",
+            fillColor: "#E41A1C",
             color: "#000",
             weight: 1,
             opacity: 1,
@@ -95,7 +95,7 @@
           
           var mSpecialty = {
             radius: 8,
-            fillColor: "#ffff33",
+            fillColor: "#984EA3",
             color: "#000",
             weight: 1,
             opacity: 1,
@@ -104,7 +104,7 @@
           
           var mFarmMarket = {
             radius: 8,
-            fillColor: "#ffff33",
+            fillColor: "#F2AF0D",
             color: "#000",
             weight: 1,
             opacity: 1,
@@ -113,7 +113,7 @@
           
           var mNA = {
             radius: 8,
-            fillColor: "#cccccc",
+            fillColor: "#666666",
             color: "#000",
             weight: 1,
             opacity: 1,
@@ -244,45 +244,6 @@
               }
             });
           }
-          
-          function getAddress(addressString){
-            function unnecessaryFunction(){
-              var parsedAddress = parseAddress.parseLocation(addressString);
-              var address = '';
-              var city = '';
-              var state = '';
-              var zip = '';
-              var geocodeURL = '';
-              
-              //Fucking mess
-              if(parsedAddress['number'] && parsedAddress['prefix'] && parsedAddress['street'] && parsedAddress['type']){
-                address = parsedAddress['number'] + ' ' + parsedAddress['prefix'] + ' ' + parsedAddress['street'] + ' ' + parsedAddress['type']; 
-              }else if(parsedAddress['number'] && parsedAddress['street'] && parsedAddress['type']){
-                address = parsedAddress['number'] + ' ' + parsedAddress['street'] + ' ' + parsedAddress['type']; 
-              }else if(parsedAddress['number'] && parsedAddress['street']){
-                address = parsedAddress['number'] + ' ' + parsedAddress['street'];
-              }else{
-                alert('Please enter at least a street number and street name');
-                return;
-              }
-              
-              if(parsedAddress['city'] && parsedAddress['state'] && parsedAddress['zip']){
-                city = parsedAddress['city'];
-                state = parsedAddress['state'];
-                zip = parsedAddress['zip'];
-                geocodeURL = 'http://dev.virtualearth.net/REST/v1/Locations/US/' + state + '/' + zip + '/' + city + '/' + encodeURIComponent(address) + '?o=json&jsonp=myCallback&key=AmEa01YgR2J-e2GRn_kc8-pTjfTgTtJcxQmMrF1ZRDLFx7KfCKrwECa54zvrHuEm';
-                
-                findNearest(geocodeURL);
-              }else{
-                city = 'Louiville';
-                state = 'Kentucky';
-                geocodeURL = 'http://dev.virtualearth.net/REST/v1/Locations/US/' + state + '/' + zip + '/' + city + '/' + encodeURIComponent(address) + '?o=json&jsonp=myCallback&key=AmEa01YgR2J-e2GRn_kc8-pTjfTgTtJcxQmMrF1ZRDLFx7KfCKrwECa54zvrHuEm';
-                findNearest(geocodeURL);
-                //alert('Please enter a city, state and zip');
-                //return;
-              }
-            };
-          };
           
           
           $('#addressSubmit').on('click',function(){

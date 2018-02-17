@@ -58,3 +58,26 @@ leaflet(data = stores_shared) %>%
   addAwesomeMarkers(~Longitude, ~Latitude, popup = ~map_label, icon = ~icons[icon_index])
 ```
 
+
+### Thanks
+
+* Civic Data Alliance 
+* Metro Louisville OPI2 
+* Humana 
+* Dare to Care 
+* Good to Grow Green 
+* Kentucky Harvest 
+* IDEAS xLab 
+* University of Louisville 
+* Louisville Grows 
+* Louisville Food Co-Opt 
+* Black Lives Matter Louisville/Stand Up Sunday 
+* Play Cousins Collective
+
+### Team
+
+* Allie Kanik
+* Chris Harrell
+* Brandon McReynolds
+* Adam H.
+* Robert Kahne

@@ -1,0 +1,36 @@
+---
+title: "Food Security Hackathon - Food Retail Mapping Team"
+author: "Document Author"
+date: "`r Sys.Date()`"
+output:
+  prettydoc::html_pretty:
+    theme: architect
+    highlight: github
+---
+
+# {.tabset}
+
+## Introduction
+
+by: Chris Harrell
+
+In 2014 the University of Louisville’s Center for Environmental Policy and Management (CEPM) and its partners successfully proposed a [brownfield](https://www.epa.gov/brownfields/overview-brownfields-program) redevelopment research grant project in response to solicitation from the US EPA.  The CEPM research team proposed an approach to both harness big data capabilities, as well as inject hyper-local data flavor to help communities determine to whom the benefits of brownfield redevelopment may accrue. The research output will include a toolkit including a desktop application that enables communities to analyze potential outcomes of brownfield redevelopment based on different redevelopment uses proposed for a particular site.  Additional toolkit features will include a mobile app to help communities identify and track current and future neighborhood condition. The benefits calculation toolkit will be used by communities to better project and track a wider variety of community benefits associated with brownfields redevelopment than has previously been possible.
+
+The EPA approved and funded the [CEPM proposal](http://louisville.edu/cepm/welcome-to-the-center-for-environmental-policy-and-management/projects/brownfields-and-safe-soil/welcome-to-the-brownfields-community-benefits-project-page) in 2015 and work began that year, and will continue through 2020.  The CEPM research team and its partners have gathered and reviewed a massive amount of data.  Among these data, the CEPM team identified good resources for the location of various types of food retailers. However, these data were not broken down into categories for the type of retailer – especially important for identifying food desert issues and access to fresh produce. 
+
+On Saturday, February 17, 2018, the CEPM team provided its raw data to the Civic Data Alliance, Metro Louisville Office of Performance Improvement and Innovation, and many additional sponsor organizations for the [Food Insecurity Hackathon](http://www.civicdataalliance.org/events/hackathons/Feed-Louisville/).  Volunteer hackers present at the event helped categorize the Louisville [SNAP data for food retailers](https://www.fns.usda.gov/snap/retailerlocator) into types of retailers and then map these separate categories – very important for determining the nature and location of food deserts. 
+
+## Elements
+
+* [Filtering Map](/interactive_leaflet.html) Lead: Robert Kahne
+* [Proximity Map](/food-locater-map.html) Lead: Allie Kanik (Be sure to enter your full address!)
+
+## Team
+
+* Brandon McReynolds
+* Allie Kanik
+* Chris Harrell
+* Dave Mattingly
+* Adam H.
+* Robert Kahne
+* "Metro" Matt Goth-Olsen
